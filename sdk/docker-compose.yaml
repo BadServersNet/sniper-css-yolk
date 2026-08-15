@@ -1,0 +1,17 @@
+services:
+  egg:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../.container:/home/container
+    environment:
+      APPID: 232330
+      SERVER_IP: 0.0.0.0
+      SERVER_PORT: 27016
+      SRCDS_MAP: de_dust2
+      SRCDS_MAXPLAYERS: 16
+      PASSWORD: ""
+      STARTUP: "./srcds_run -game cstrike -console -ip {{SERVER_IP}} -port {{SERVER_PORT}} -tickrate 66 +map {{SRCDS_MAP}} +maxplayers {{SRCDS_MAXPLAYERS}} +sv_password {{PASSWORD}}"
+    ports:
+      - "27016:27016/udp"

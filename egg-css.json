@@ -1,0 +1,93 @@
+{
+  "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "exported_at": "2026-07-17T13:02:41-05:00",
+  "name": "Counter-Strike: Source",
+  "author": "busheezy@badservers.net",
+  "description": null,
+  "features": [],
+  "docker_images": {
+    "Platform": "ghcr.io\/badserversnet\/sniper-css-yolk:latest",
+    "SDK": "ghcr.io\/badserversnet\/sniper-sdk-css-yolk:latest"
+  },
+  "file_denylist": [],
+  "startup": ".\/srcds_run -game cstrike -console -ip 0.0.0.0 -port {{SERVER_PORT}} -tickrate {{TICKRATE}} +map {{MAP}} +maxplayers {{MAXPLAYERS}} +sv_password \"{{PASSWORD}}\"",
+  "config": {
+    "files": "{}",
+    "startup": "{\r\n    \"done\": \"Connection to Steam servers successful\"\r\n}",
+    "logs": "{}",
+    "stop": "quit"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!\/bin\/bash\r\nset -Eeuo pipefail\r\n\r\nif [ -z \"${STEAM_USER:-}\" ]; then\r\n    STEAM_USER=anonymous\r\n    STEAM_PASS=\"\"\r\n    STEAM_AUTH=\"\"\r\nfi\r\n\r\nmkdir -p \/mnt\/server\/steamcmd\r\ncurl --fail --show-error --silent --location --output \/tmp\/steamcmd.tar.gz https:\/\/steamcdn-a.akamaihd.net\/client\/installer\/steamcmd_linux.tar.gz\r\ntar -xzf \/tmp\/steamcmd.tar.gz -C \/mnt\/server\/steamcmd\r\nmkdir -p \/mnt\/server\/steamapps\r\ncd \/mnt\/server\/steamcmd\r\n\r\nchown -R root:root \/mnt\r\nexport HOME=\/mnt\/server\r\n\r\nsteam_login=(+login \"${STEAM_USER}\" \"${STEAM_PASS:-}\" \"${STEAM_AUTH:-}\")\r\nsteam_update=(+app_update \"${APPID}\")\r\n\r\nif [ \"${VALIDATE:-0}\" != \"0\" ]; then\r\n    steam_update+=(validate)\r\nfi\r\n\r\n.\/steamcmd.sh +force_install_dir \/mnt\/server \"${steam_login[@]}\" \"${steam_update[@]}\" +quit | tee \/tmp\/steamcmd-install.log\r\n\r\nif ! grep -Fq \"Success! App '${APPID}' fully installed.\" \/tmp\/steamcmd-install.log; then\r\n    echo \"SteamCMD did not report a completed app installation.\" >&2\r\n    exit 1\r\nfi\r\n\r\nif [ ! -x \/mnt\/server\/srcds_run ]; then\r\n    echo \"SteamCMD finished without installing srcds_run.\" >&2\r\n    exit 1\r\nfi\r\n\r\nif [ ! -d \/mnt\/server\/cstrike ]; then\r\n    echo \"SteamCMD finished without installing the cstrike game directory.\" >&2\r\n    exit 1\r\nfi\r\n\r\nmkdir -p \/mnt\/server\/.steam\/sdk32\r\ncp -v linux32\/steamclient.so \/mnt\/server\/.steam\/sdk32\/steamclient.so\r\n\r\nmkdir -p \/mnt\/server\/.steam\/sdk64\r\ncp -v linux64\/steamclient.so \/mnt\/server\/.steam\/sdk64\/steamclient.so",
+      "container": "ghcr.io\/pterodactyl\/installers:debian",
+      "entrypoint": "bash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Map",
+      "description": "The default map for the server.",
+      "env_variable": "MAP",
+      "default_value": "de_dust2",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string",
+      "field_type": "text"
+    },
+    {
+      "name": "App ID",
+      "description": "",
+      "env_variable": "APPID",
+      "default_value": "232330",
+      "user_viewable": false,
+      "user_editable": false,
+      "rules": "required|integer",
+      "field_type": "text"
+    },
+    {
+      "name": "Max Players",
+      "description": "",
+      "env_variable": "MAXPLAYERS",
+      "default_value": "16",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|integer",
+      "field_type": "text"
+    },
+    {
+      "name": "Tickrate",
+      "description": "The server tickrate.",
+      "env_variable": "TICKRATE",
+      "default_value": "66",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|integer|min:1",
+      "field_type": "text"
+    },
+    {
+      "name": "PASSWORD",
+      "description": "",
+      "env_variable": "PASSWORD",
+      "default_value": "",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "string|nullable",
+      "field_type": "text"
+    },
+    {
+      "name": "VALIDATE",
+      "description": "",
+      "env_variable": "VALIDATE",
+      "default_value": "0",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string|max:20",
+      "field_type": "text"
+    }
+  ]
+}
