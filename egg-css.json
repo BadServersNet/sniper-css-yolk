@@ -14,7 +14,7 @@
     "SDK": "ghcr.io\/badserversnet\/sniper-sdk-css-yolk:latest"
   },
   "file_denylist": [],
-  "startup": ".\/srcds_run -game cstrike -console -ip 0.0.0.0 -port {{SERVER_PORT}} -tickrate {{TICKRATE}} +map {{MAP}} +maxplayers {{MAXPLAYERS}} +sv_password \"{{PASSWORD}}\"",
+  "startup": "\/bin\/bash .\/srcds_run -game cstrike -console -ip 0.0.0.0 -port {{SERVER_PORT}} -tickrate {{TICKRATE}} +map {{MAP}} +maxplayers {{MAXPLAYERS}} +sv_password \"{{PASSWORD}}\"",
   "config": {
     "files": "{}",
     "startup": "{\r\n    \"done\": \"Connection to Steam servers successful\"\r\n}",

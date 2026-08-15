@@ -12,6 +12,6 @@ services:
       SRCDS_MAP: de_dust2
       SRCDS_MAXPLAYERS: 16
       PASSWORD: ""
-      STARTUP: "./srcds_run -game cstrike -console -ip {{SERVER_IP}} -port {{SERVER_PORT}} -tickrate 66 +map {{SRCDS_MAP}} +maxplayers {{SRCDS_MAXPLAYERS}} +sv_password {{PASSWORD}}"
+      STARTUP: "/bin/bash ./srcds_run -game cstrike -console -ip {{SERVER_IP}} -port {{SERVER_PORT}} -tickrate 66 +map {{SRCDS_MAP}} +maxplayers {{SRCDS_MAXPLAYERS}} +sv_password {{PASSWORD}}"
     ports:
       - "27016:27016/udp"
