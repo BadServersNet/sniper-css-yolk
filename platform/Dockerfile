@@ -3,7 +3,9 @@ LABEL author="BuSheeZy"
 LABEL maintainer="BuSheeZy@BadServers.net"
 LABEL org.opencontainers.image.source="https://github.com/BadServersNet/sniper-css-yolk"
 
-RUN apt install -y iproute2 python3 \
+RUN apt-get update \
+  && apt-get install -y iproute2 libtinfo5:i386 python3 \
+  && rm -rf /var/lib/apt/lists/* \
   && adduser --disabled-password --home /home/container container
 
 USER container
