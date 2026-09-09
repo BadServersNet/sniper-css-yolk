@@ -72,4 +72,8 @@ else
   echo -e "Not updating game server as auto update was set to 0. Starting Server"
 fi
 
+mkdir -p /home/container/.steam/sdk32
+cp -f /home/container/steamcmd/linux32/steamclient.so \
+  /home/container/.steam/sdk32/steamclient.so
+
 exec python3 /startup.py
